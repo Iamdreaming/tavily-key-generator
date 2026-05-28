@@ -12,8 +12,12 @@ import random
 import re
 import string
 import time
+import urllib3
 
 import requests as std_requests
+
+# 禁用 SSL 警告
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 from config import (
     CF_TEMP_EMAIL_ADMIN_PASSWORD,
@@ -431,19 +435,37 @@ def _create_cf_temp_email_mailbox(prefix):
     print(f"  [cf_temp_email] 创建邮箱: {username}@{domain}")
     print(f"  [cf_temp_email] API: {api_url}")
 
-    response = std_requests.post(
-        api_url,
-        json={
-            "enablePrefix": True,
-            "name": username,
-            "domain": domain,
-        },
-        headers={
-            "x-admin-auth": CF_TEMP_EMAIL_ADMIN_PASSWORD,
-            "Content-Type": "application/json",
-        },
-        timeout=15,
-    )
+    try:
+        response = std_requests.post(
+            api_url,
+            json={
+                "enablePrefix": True,
+                "name": username,
+                "domain": domain,
+            },
+            headers={
+                "x-admin-auth": CF_TEMP_EMAIL_ADMIN_PASSWORD,
+                "Content-Type": "application/json",
+            },
+            timeout=15,
+            verify=False,
+        )
+    except std_requests.exceptions.SSLError:
+        print("  [cf_temp_email] SSL 验证失败，重试 (verify=False)...")
+        response = std_requests.post(
+            api_url,
+            json={
+                "enablePrefix": True,
+                "name": username,
+                "domain": domain,
+            },
+            headers={
+                "x-admin-auth": CF_TEMP_EMAIL_ADMIN_PASSWORD,
+                "Content-Type": "application/json",
+            },
+            timeout=15,
+            verify=False,
+        )
 
     print(f"  [cf_temp_email] 响应状态: {response.status_code}")
     if response.status_code != 200:
@@ -477,15 +499,29 @@ def _cf_temp_email_iter_messages(addr):
     api_url = f"{CF_TEMP_EMAIL_API_URL.rstrip('/')}/api/mails"
     print(f"  [cf_temp_email] 读取邮件: {addr}")
 
-    response = std_requests.get(
-        api_url,
-        params={"limit": 50, "offset": 0},
-        headers={
-            "Authorization": f"Bearer {jwt_token}",
-            "Content-Type": "application/json",
-        },
-        timeout=15,
-    )
+    try:
+        response = std_requests.get(
+            api_url,
+            params={"limit": 50, "offset": 0},
+            headers={
+                "Authorization": f"Bearer {jwt_token}",
+                "Content-Type": "application/json",
+            },
+            timeout=15,
+            verify=False,
+        )
+    except std_requests.exceptions.SSLError:
+        print("  [cf_temp_email] SSL 验证失败，重试 (verify=False)...")
+        response = std_requests.get(
+            api_url,
+            params={"limit": 50, "offset": 0},
+            headers={
+                "Authorization": f"Bearer {jwt_token}",
+                "Content-Type": "application/json",
+            },
+            timeout=15,
+            verify=False,
+        )
 
     print(f"  [cf_temp_email] 邮件响应: {response.status_code}")
     if response.status_code != 200:
