@@ -1,0 +1,14 @@
+{
+    "manifest_version": 3,
+    "name": "Turnstile Patch",
+    "version": "1.0",
+    "description": "Patch browser fingerprints for Turnstile",
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["content.js"],
+            "run_at": "document_start",
+            "all_frames": true
+        }
+    ]
+}

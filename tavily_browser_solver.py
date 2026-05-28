@@ -28,6 +28,10 @@ def create_browser_options():
     options.set_timeouts(base=1)
     if REGISTER_HEADLESS:
         options.headless()
+    # 加载 Turnstile 反检测扩展
+    extension_path = os.path.join(_HERE, "turnstilePatch")
+    if os.path.exists(extension_path):
+        options.add_extension(extension_path)
     return options
 
 
