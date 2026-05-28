@@ -3,8 +3,11 @@
 当前支持：
 1. Cloudflare 自定义邮件 API
 2. DuckMail API
+3. Cloudflare Temp Email (cloudflare_temp_email 项目)
 """
-import html
+import email
+import email.policy
+import html as html_module
 import random
 import re
 import string
@@ -13,6 +16,10 @@ import time
 import requests as std_requests
 
 from config import (
+    CF_TEMP_EMAIL_ADMIN_PASSWORD,
+    CF_TEMP_EMAIL_API_URL,
+    CF_TEMP_EMAIL_DOMAIN,
+    CF_TEMP_EMAIL_DOMAINS,
     DUCKMAIL_API_KEY,
     DUCKMAIL_API_URL,
     DUCKMAIL_DOMAIN,
@@ -42,6 +49,8 @@ def get_configured_domains():
     """返回当前 provider 在配置里声明的可选域名。"""
     if EMAIL_PROVIDER == "duckmail":
         return DUCKMAIL_DOMAINS[:]
+    if EMAIL_PROVIDER == "cloudflare_temp_email":
+        return CF_TEMP_EMAIL_DOMAINS[:]
     return EMAIL_DOMAINS[:]
 
 def get_active_domain():
@@ -55,6 +64,8 @@ def get_active_domain():
 
     if EMAIL_PROVIDER == "duckmail":
         return DUCKMAIL_DOMAIN
+    if EMAIL_PROVIDER == "cloudflare_temp_email":
+        return CF_TEMP_EMAIL_DOMAIN
     return EMAIL_DOMAIN
 
 def set_selected_domain(domain):
@@ -86,6 +97,8 @@ def create_email(service="tavily"):
 
     if EMAIL_PROVIDER == "duckmail":
         email = _create_duckmail_mailbox(password, prefix)
+    elif EMAIL_PROVIDER == "cloudflare_temp_email":
+        email = _create_cf_temp_email_mailbox(prefix)
     else:
         username = f"{prefix}-{rand_str()}"
         email = f"{username}@{get_active_domain()}"
@@ -155,7 +168,7 @@ def _extract_verification_link(message):
     sender = (message.get("from") or message.get("message_from") or "").lower()
     content = _message_content(message)
     urls = [
-        html.unescape(raw).rstrip(").,;")
+        html_module.unescape(raw).rstrip(").,;")
         for raw in re.findall(r'https://[^\s<>"\']+', content, re.IGNORECASE)
     ]
 
@@ -213,6 +226,10 @@ def _extract_email_code(message, service="tavily"):
 def _iter_messages(email):
     if EMAIL_PROVIDER == "duckmail":
         yield from _duckmail_iter_messages(email)
+        return
+
+    if EMAIL_PROVIDER == "cloudflare_temp_email":
+        yield from _cf_temp_email_iter_messages(email)
         return
 
     yield from _cloudflare_iter_messages(email)
@@ -387,6 +404,150 @@ def _message_content(message):
         html = " ".join(str(item) for item in html)
     text = message.get("text") or ""
     return f"{html} {text}"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Cloudflare Temp Email provider
+# ─────────────────────────────────────────────────────────────────────────────
+
+# 缓存邮箱地址 -> jwt 的映射
+_CF_TEMP_EMAIL_JWT_CACHE = {}
+
+
+def _create_cf_temp_email_mailbox(prefix):
+    """通过 cloudflare_temp_email 的 admin API 创建邮箱。"""
+    if not CF_TEMP_EMAIL_API_URL:
+        raise RuntimeError("未配置 CF_TEMP_EMAIL_API_URL")
+    if not CF_TEMP_EMAIL_ADMIN_PASSWORD:
+        raise RuntimeError("未配置 CF_TEMP_EMAIL_ADMIN_PASSWORD")
+
+    domain = get_active_domain()
+    if not domain:
+        raise RuntimeError("未配置 CF_TEMP_EMAIL_DOMAIN")
+
+    username = f"{prefix}-{rand_str()}"
+
+    response = std_requests.post(
+        f"{CF_TEMP_EMAIL_API_URL.rstrip('/')}/admin/new_address",
+        json={
+            "enablePrefix": True,
+            "name": username,
+            "domain": domain,
+        },
+        headers={
+            "x-admin-auth": CF_TEMP_EMAIL_ADMIN_PASSWORD,
+            "Content-Type": "application/json",
+        },
+        timeout=15,
+    )
+    response.raise_for_status()
+
+    data = response.json()
+    addr = data.get("address")
+    jwt_token = data.get("jwt")
+
+    if not addr or not jwt_token:
+        raise RuntimeError(f"cloudflare_temp_email 创建邮箱失败: {data}")
+
+    _CF_TEMP_EMAIL_JWT_CACHE[addr] = jwt_token
+    return addr
+
+
+def _cf_temp_email_iter_messages(addr):
+    """通过 cloudflare_temp_email 的 /api/mails 读取邮件。
+
+    返回的每条 message 兼容原有格式：包含 id / subject / from / text / html 字段。
+    cloudflare_temp_email 返回的是 raw RFC822，需要客户端解析。
+    """
+    jwt_token = _CF_TEMP_EMAIL_JWT_CACHE.get(addr)
+    if not jwt_token:
+        raise RuntimeError(
+            f"cloudflare_temp_email 未找到 {addr} 的 JWT，请重新创建邮箱"
+        )
+
+    response = std_requests.get(
+        f"{CF_TEMP_EMAIL_API_URL.rstrip('/')}/api/mails",
+        params={"limit": 50, "offset": 0},
+        headers={
+            "Authorization": f"Bearer {jwt_token}",
+            "Content-Type": "application/json",
+        },
+        timeout=15,
+    )
+    response.raise_for_status()
+
+    data = response.json()
+    # /api/mails 返回格式: {"results": [...]} 或直接是列表
+    raw_mails = data.get("results", data) if isinstance(data, dict) else data
+
+    for raw_mail in raw_mails:
+        parsed = _cf_temp_email_parse_raw(raw_mail)
+        if parsed:
+            yield parsed
+
+
+def _cf_temp_email_parse_raw(raw_mail):
+    """将 cloudflare_temp_email 返回的原始邮件数据解析为标准格式。
+
+    raw_mail 可能包含:
+    - raw: RFC822 原始邮件内容
+    - source: 同 raw
+    - id / mail_id: 邮件 ID
+    """
+    raw_content = raw_mail.get("raw") or raw_mail.get("source") or ""
+    mail_id = raw_mail.get("id") or raw_mail.get("mail_id") or raw_mail.get("msgid")
+
+    if not raw_content:
+        # 如果没有 raw 内容，尝试直接使用（可能已经是解析好的格式）
+        return {
+            "id": mail_id,
+            "subject": raw_mail.get("subject", ""),
+            "from": raw_mail.get("from") or raw_mail.get("message_from", ""),
+            "text": raw_mail.get("text", ""),
+            "html": raw_mail.get("html", ""),
+        }
+
+    # 解析 RFC822 邮件
+    try:
+        msg = email.message_from_string(raw_content, policy=email.policy.default)
+        subject = str(msg.get("subject", ""))
+        from_addr = str(msg.get("from", ""))
+        message_id = str(msg.get("message-id", "")) or mail_id
+
+        # 提取正文
+        text_body = ""
+        html_body = ""
+
+        if msg.is_multipart():
+            for part in msg.walk():
+                content_type = part.get_content_type()
+                if content_type == "text/plain":
+                    text_body = part.get_content()
+                elif content_type == "text/html":
+                    html_body = part.get_content()
+        else:
+            content_type = msg.get_content_type()
+            if content_type == "text/plain":
+                text_body = msg.get_content()
+            elif content_type == "text/html":
+                html_body = msg.get_content()
+
+        return {
+            "id": message_id or mail_id,
+            "subject": subject,
+            "from": from_addr,
+            "text": text_body,
+            "html": html_body,
+        }
+    except Exception as e:
+        print(f"⚠️  解析邮件失败: {e}")
+        return {
+            "id": mail_id,
+            "subject": "",
+            "from": "",
+            "text": raw_content[:5000],
+            "html": "",
+        }
 
 
 def _response_error_message(response):

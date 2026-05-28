@@ -12,6 +12,9 @@ PLACEHOLDER_ENV_VALUES = {
     "EMAIL_DOMAINS": {"example.com", "example.org"},
     "DUCKMAIL_DOMAIN": {"example.com"},
     "DUCKMAIL_DOMAINS": {"example.com", "example.org"},
+    "CF_TEMP_EMAIL_API_URL": {"https://your-worker.workers.dev"},
+    "CF_TEMP_EMAIL_ADMIN_PASSWORD": {"replace-with-your-admin-password"},
+    "CF_TEMP_EMAIL_DOMAIN": {"example.com"},
     "SERVER_URL": {"https://your-server.example.com"},
     "SERVER_ADMIN_PASSWORD": {"replace-with-your-admin-password"},
 }
@@ -85,7 +88,7 @@ _load_dotenv()
 
 # 邮箱配置
 EMAIL_PROVIDER = _get_str("EMAIL_PROVIDER", "cloudflare").lower()
-SUPPORTED_EMAIL_PROVIDERS = ("cloudflare", "duckmail")
+SUPPORTED_EMAIL_PROVIDERS = ("cloudflare", "duckmail", "cloudflare_temp_email")
 EMAIL_API_URL = _get_str("EMAIL_API_URL")
 EMAIL_API_TOKEN = _get_str("EMAIL_API_TOKEN")
 EMAIL_DOMAIN = _get_str("EMAIL_DOMAIN")
@@ -94,6 +97,12 @@ DUCKMAIL_API_URL = _get_str("DUCKMAIL_API_URL", "https://api.duckmail.sbs")
 DUCKMAIL_API_KEY = _get_str("DUCKMAIL_API_KEY")
 DUCKMAIL_DOMAIN = _get_str("DUCKMAIL_DOMAIN")
 DUCKMAIL_DOMAINS = _get_list("DUCKMAIL_DOMAINS", DUCKMAIL_DOMAIN)
+
+# Cloudflare Temp Email 配置
+CF_TEMP_EMAIL_API_URL = _get_str("CF_TEMP_EMAIL_API_URL")
+CF_TEMP_EMAIL_ADMIN_PASSWORD = _get_str("CF_TEMP_EMAIL_ADMIN_PASSWORD")
+CF_TEMP_EMAIL_DOMAIN = _get_str("CF_TEMP_EMAIL_DOMAIN")
+CF_TEMP_EMAIL_DOMAINS = _get_list("CF_TEMP_EMAIL_DOMAINS", CF_TEMP_EMAIL_DOMAIN)
 
 # 上传目标
 SERVER_URL = _get_str("SERVER_URL")
