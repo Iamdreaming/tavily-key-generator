@@ -77,6 +77,9 @@ import requests as std_requests
 from config import (
     DEFAULT_UPLOAD,
     DEFAULT_CONCURRENCY,
+    CF_TEMP_EMAIL_ADMIN_PASSWORD,
+    CF_TEMP_EMAIL_API_URL,
+    CF_TEMP_EMAIL_DOMAINS,
     DUCKMAIL_API_KEY,
     DUCKMAIL_API_URL,
     DUCKMAIL_DOMAINS,
@@ -241,6 +244,15 @@ def validate_runtime_config(upload, show_provider_summary=True):
         required["DUCKMAIL_API_URL"] = DUCKMAIL_API_URL
         if any(is_placeholder_env_value("DUCKMAIL_DOMAINS", item) for item in DUCKMAIL_DOMAINS):
             append_unique(placeholder, "DUCKMAIL_DOMAIN / DUCKMAIL_DOMAINS")
+    elif EMAIL_PROVIDER == "cloudflare_temp_email":
+        required.update({
+            "CF_TEMP_EMAIL_API_URL": CF_TEMP_EMAIL_API_URL,
+            "CF_TEMP_EMAIL_ADMIN_PASSWORD": CF_TEMP_EMAIL_ADMIN_PASSWORD,
+        })
+        if not CF_TEMP_EMAIL_DOMAINS:
+            missing.append("CF_TEMP_EMAIL_DOMAIN / CF_TEMP_EMAIL_DOMAINS")
+        elif any(is_placeholder_env_value("CF_TEMP_EMAIL_DOMAINS", item) for item in CF_TEMP_EMAIL_DOMAINS):
+            append_unique(placeholder, "CF_TEMP_EMAIL_DOMAIN / CF_TEMP_EMAIL_DOMAINS")
     else:
         required.update({
             "EMAIL_API_URL": EMAIL_API_URL,
@@ -282,6 +294,11 @@ def validate_runtime_config(upload, show_provider_summary=True):
             print(f"📧 当前邮箱 provider: duckmail")
             print(f"   域名配置: {configured}")
             print(f"   API: {api_hint}")
+        elif EMAIL_PROVIDER == "cloudflare_temp_email":
+            configured = ", ".join(CF_TEMP_EMAIL_DOMAINS) if CF_TEMP_EMAIL_DOMAINS else "未配置"
+            print(f"📧 当前邮箱 provider: cloudflare_temp_email")
+            print(f"   API: {CF_TEMP_EMAIL_API_URL}")
+            print(f"   域名配置: {configured}")
         else:
             print(f"📧 当前邮箱 provider: cloudflare")
             print(f"   域名配置: {', '.join(EMAIL_DOMAINS)}")

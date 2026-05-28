@@ -426,9 +426,13 @@ def _create_cf_temp_email_mailbox(prefix):
         raise RuntimeError("未配置 CF_TEMP_EMAIL_DOMAIN")
 
     username = f"{prefix}-{rand_str()}"
+    api_url = f"{CF_TEMP_EMAIL_API_URL.rstrip('/')}/admin/new_address"
+
+    print(f"  [cf_temp_email] 创建邮箱: {username}@{domain}")
+    print(f"  [cf_temp_email] API: {api_url}")
 
     response = std_requests.post(
-        f"{CF_TEMP_EMAIL_API_URL.rstrip('/')}/admin/new_address",
+        api_url,
         json={
             "enablePrefix": True,
             "name": username,
@@ -440,6 +444,10 @@ def _create_cf_temp_email_mailbox(prefix):
         },
         timeout=15,
     )
+
+    print(f"  [cf_temp_email] 响应状态: {response.status_code}")
+    if response.status_code != 200:
+        print(f"  [cf_temp_email] 响应内容: {response.text[:500]}")
     response.raise_for_status()
 
     data = response.json()
@@ -449,6 +457,7 @@ def _create_cf_temp_email_mailbox(prefix):
     if not addr or not jwt_token:
         raise RuntimeError(f"cloudflare_temp_email 创建邮箱失败: {data}")
 
+    print(f"  [cf_temp_email] 创建成功: {addr}")
     _CF_TEMP_EMAIL_JWT_CACHE[addr] = jwt_token
     return addr
 
@@ -465,8 +474,11 @@ def _cf_temp_email_iter_messages(addr):
             f"cloudflare_temp_email 未找到 {addr} 的 JWT，请重新创建邮箱"
         )
 
+    api_url = f"{CF_TEMP_EMAIL_API_URL.rstrip('/')}/api/mails"
+    print(f"  [cf_temp_email] 读取邮件: {addr}")
+
     response = std_requests.get(
-        f"{CF_TEMP_EMAIL_API_URL.rstrip('/')}/api/mails",
+        api_url,
         params={"limit": 50, "offset": 0},
         headers={
             "Authorization": f"Bearer {jwt_token}",
@@ -474,12 +486,17 @@ def _cf_temp_email_iter_messages(addr):
         },
         timeout=15,
     )
+
+    print(f"  [cf_temp_email] 邮件响应: {response.status_code}")
+    if response.status_code != 200:
+        print(f"  [cf_temp_email] 响应内容: {response.text[:500]}")
     response.raise_for_status()
 
     data = response.json()
     # /api/mails 返回格式: {"results": [...]} 或直接是列表
     raw_mails = data.get("results", data) if isinstance(data, dict) else data
 
+    print(f"  [cf_temp_email] 收到 {len(raw_mails)} 封邮件")
     for raw_mail in raw_mails:
         parsed = _cf_temp_email_parse_raw(raw_mail)
         if parsed:
