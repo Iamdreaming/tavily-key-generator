@@ -822,13 +822,37 @@ class TurnstileAPIServer:
             await asyncio.sleep(3)
 
             locator = page.locator('input[name="cf-turnstile-response"]')
-            max_attempts = 30
+            max_attempts = 60
             click_count = 0
-            max_clicks = 10
+            max_clicks = 15
 
             for attempt in range(max_attempts):
                 try:
-                    # Безопасная проверка количества элементов с токеном
+                    # 方法1: 用 turnstile.getResponse() 获取 token（最可靠）
+                    try:
+                        token = await page.evaluate("""
+                            try {
+                                const byInput = String(
+                                    (document.querySelector('input[name="cf-turnstile-response"]') || {}).value || ''
+                                ).trim();
+                                if (byInput) return byInput;
+                                if (window.turnstile && typeof turnstile.getResponse === 'function') {
+                                    return String(turnstile.getResponse() || '').trim();
+                                }
+                                return '';
+                            } catch(e) { return ''; }
+                        """)
+                        token = str(token or "").strip()
+                        if len(token) >= 80:
+                            elapsed_time = round(time.time() - start_time, 3)
+                            logger.success(f"Browser {index}: Successfully solved captcha - {COLORS.get('MAGENTA')}{token[:10]}{COLORS.get('RESET')} in {COLORS.get('GREEN')}{elapsed_time}{COLORS.get('RESET')} Seconds")
+                            await save_result(task_id, "turnstile", {"value": token, "elapsed_time": elapsed_time})
+                            return
+                    except Exception as e:
+                        if self.debug:
+                            logger.debug(f"Browser {index}: turnstile.getResponse() check failed: {str(e)}")
+
+                    # 方法2: 直接读 input value
                     try:
                         count = await locator.count()
                     except Exception as e:
