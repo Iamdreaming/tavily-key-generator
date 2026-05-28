@@ -52,19 +52,89 @@ def extract_signup_url(html):
     return f"https://auth.tavily.com{match.group(1)}"
 
 
+def _try_click_turnstile(page):
+    """尝试点击 Turnstile checkbox，多种方式。返回 True 如果点击成功。"""
+    # 方法1: shadow DOM（Grok 注册机方式）
+    try:
+        cf_input = page.ele("@name=cf-turnstile-response")
+        if cf_input:
+            parent = cf_input.parent()
+            if parent:
+                try:
+                    sr = parent.shadow_root
+                    if sr:
+                        iframe = sr.ele("tag:iframe")
+                        if iframe:
+                            body = iframe.ele("tag:body")
+                            if body:
+                                body_sr = body.shadow_root
+                                if body_sr:
+                                    btn = body_sr.ele("tag:input")
+                                    if btn:
+                                        btn.click()
+                                        return True
+                except Exception:
+                    pass
+    except Exception:
+        pass
+
+    # 方法2: 直接找 iframe 通过 src
+    try:
+        iframe = page.ele('tag:iframe@src*://challenges.cloudflare.com')
+        if iframe:
+            frame = iframe.frame
+            if frame:
+                try:
+                    btn = frame.ele('tag:input')
+                    if btn:
+                        btn.click()
+                        return True
+                except Exception:
+                    pass
+    except Exception:
+        pass
+
+    # 方法3: JS 注入点击（通过所有 iframe）
+    try:
+        clicked = page.run_js("""
+            try {
+                var iframes = document.querySelectorAll('iframe');
+                for (var i = 0; i < iframes.length; i++) {
+                    try {
+                        var doc = iframes[i].contentDocument || iframes[i].contentWindow.document;
+                        if (!doc) continue;
+                        var inputs = doc.querySelectorAll('input[type="checkbox"], input');
+                        for (var j = 0; j < inputs.length; j++) {
+                            if (inputs[j].type === 'checkbox' || inputs[j].type === 'button') {
+                                inputs[j].click();
+                                return true;
+                            }
+                        }
+                    } catch(e) { continue; }
+                }
+            } catch(e) {}
+            return false;
+        """)
+        if clicked:
+            return True
+    except Exception:
+        pass
+
+    return False
+
+
 def poll_turnstile_token(page, timeout=120):
-    """轮询获取 Turnstile token（学自 Grok 注册机）
+    """轮询获取 Turnstile token
 
     真实 Chrome 下 Turnstile 通常会自动通过。
     卡住时尝试点击 checkbox。
     """
     start_time = time.time()
     click_count = 0
-    max_clicks = 15
-    last_click_time = 0
+    max_clicks = 20
 
     while time.time() - start_time < timeout:
-        # 检查 token（直接从 input 或 turnstile.getResponse）
+        # 检查 token
         try:
             token = page.run_js("""
                 try {
@@ -85,31 +155,11 @@ def poll_turnstile_token(page, timeout=120):
         except Exception:
             pass
 
-        # 每隔 3 秒尝试点击 checkbox
-        now = time.time()
-        if now - last_click_time >= 3 and click_count < max_clicks:
-            try:
-                challenge_input = page.ele("@name=cf-turnstile-response")
-                if challenge_input:
-                    wrapper = challenge_input.parent()
-                    iframe = None
-                    try:
-                        iframe = wrapper.shadow_root.ele("tag:iframe")
-                    except Exception:
-                        pass
-                    if iframe:
-                        try:
-                            body_sr = iframe.ele("tag:body").shadow_root
-                            btn = body_sr.ele("tag:input")
-                            if btn:
-                                btn.click()
-                                click_count += 1
-                                last_click_time = now
-                                print(f"  [turnstile] 点击 checkbox #{click_count}")
-                        except Exception:
-                            pass
-            except Exception:
-                pass
+        # 每次循环都尝试点击（频率更高）
+        if click_count < max_clicks:
+            if _try_click_turnstile(page):
+                click_count += 1
+                print(f"  [turnstile] 点击 checkbox #{click_count}")
 
         time.sleep(1)
 
