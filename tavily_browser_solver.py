@@ -271,24 +271,26 @@ def register_with_browser_solver(email, password):
         browser, page = start_browser()
         print("✅ 浏览器已启动")
 
-        # 1. 访问登录页获取注册链接（不在登录页等待 Turnstile）
+        # 1. 访问登录页
         page.get("https://app.tavily.com/sign-in")
-        page.wait.doc_loaded()
-        time.sleep(2)
+        time.sleep(8)
 
-        # 提取注册链接
-        signup_url = extract_signup_url(page.html)
-        if not signup_url:
-            print("❌ 未找到注册链接")
-            return None
+        # 2. 点击 Sign up 链接切换到注册表单（用 JS 点击，DrissionPage 选择器不可靠）
+        clicked = page.run_js('''
+          var link = document.querySelector('a[href*="signup"]');
+          if (link) {
+            link.click();
+            return true;
+          }
+          return false;
+        ''')
+        if clicked:
+            print("🖱️  已切换到注册表单")
+            time.sleep(3)
+        else:
+            print("⚠️  未找到 Sign up 链接，可能已在注册表单")
 
-        # 2. 直接跳转到注册页
-        print("🧭 进入注册页...")
-        page.get(signup_url)
-        page.wait.doc_loaded()
-        time.sleep(3)
-
-        # 3. 在注册页等待 Turnstile 通过
+        # 3. 等待 Turnstile 通过
         print("🔐 等待 Turnstile 验证...")
         token = poll_turnstile_token(page, timeout=120)
         if token:
@@ -297,7 +299,7 @@ def register_with_browser_solver(email, password):
             print("⚠️  Turnstile 未通过，尝试继续...")
 
         # 4. 填写邮箱
-        email_input = page.ele("@name=email") or page.ele("@name=username") or page.ele("@type=email")
+        email_input = page.ele("@name=username") or page.ele("@name=email") or page.ele("@id=username") or page.ele("@type=email")
         if not email_input:
             print("❌ 未找到邮箱输入框")
             return None
@@ -316,12 +318,22 @@ def register_with_browser_solver(email, password):
 
         # 4. 等待密码页面（Tavily 先要密码再要验证码）
         print("⏳ 等待密码页面...")
+        time.sleep(2)
         password_input = wait_for_element(page, "@name=password", timeout=10)
         if not password_input:
             password_input = page.ele("@type=password")
 
         if password_input:
-            print("✅ 到达密码页面")
+            # 判断是注册密码页还是登录密码页
+            page_title = page.title.lower()
+            page_url = page.url.lower()
+            is_login = "login" in page_title or "log in" in page_title or "/login/" in page_url
+            if is_login:
+                print("⚠️  邮箱已被注册，进入了登录页面")
+                # TODO: 可以换邮箱重试
+                return None
+            
+            print("✅ 到达注册密码页面")
             password_input.clear()
             password_input.input(password)
             print("🔑 已填写密码")
