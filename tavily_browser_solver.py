@@ -58,25 +58,17 @@ def poll_turnstile_token(page, timeout=120):
     真实 Chrome 下 Turnstile 通常会自动通过。
     卡住时尝试点击 checkbox。
     """
-    # 先重置 turnstile
-    try:
-        page.run_js("""
-            try { if (window.turnstile && typeof turnstile.reset === 'function') turnstile.reset(); } catch(e) {}
-        """)
-    except Exception:
-        pass
-
     start_time = time.time()
     click_count = 0
     max_clicks = 15
     last_click_time = 0
 
     while time.time() - start_time < timeout:
-        # 检查 token
+        # 检查 token（直接从 input 或 turnstile.getResponse）
         try:
             token = page.run_js("""
                 try {
-                    const byInput = String(
+                    var byInput = String(
                         (document.querySelector('input[name="cf-turnstile-response"]') || {}).value || ''
                     ).trim();
                     if (byInput) return byInput;
@@ -88,6 +80,7 @@ def poll_turnstile_token(page, timeout=120):
             """)
             token = str(token or "").strip()
             if len(token) >= 80:
+                print(f"  [turnstile] Token 已获取，长度={len(token)}")
                 return token
         except Exception:
             pass
@@ -120,6 +113,7 @@ def poll_turnstile_token(page, timeout=120):
 
         time.sleep(1)
 
+    print(f"  [turnstile] 超时 ({timeout}s)，点击了 {click_count} 次")
     return None
 
 
@@ -277,27 +271,32 @@ def register_with_browser_solver(email, password):
         browser, page = start_browser()
         print("✅ 浏览器已启动")
 
-        # 1. 访问 Tavily 登录/注册页
+        # 1. 访问登录页获取注册链接（不在登录页等待 Turnstile）
         page.get("https://app.tavily.com/sign-in")
         page.wait.doc_loaded()
         time.sleep(2)
 
-        # 检查是否有注册入口
+        # 提取注册链接
         signup_url = extract_signup_url(page.html)
-        if signup_url:
-            print("🧭 进入注册页...")
-            page.get(signup_url)
-            page.wait.doc_loaded()
-            time.sleep(2)
-        else:
-            # 可能是新版登录/注册合一入口
-            email_input = page.ele("@name=email") or page.ele("@name=username") or page.ele("@type=email")
-            if not email_input:
-                print(f"❌ 未找到注册入口: {page.url}")
-                return None
-            print("ℹ️  检测到登录/注册合一入口")
+        if not signup_url:
+            print("❌ 未找到注册链接")
+            return None
 
-        # 2. 填写邮箱
+        # 2. 直接跳转到注册页
+        print("🧭 进入注册页...")
+        page.get(signup_url)
+        page.wait.doc_loaded()
+        time.sleep(3)
+
+        # 3. 在注册页等待 Turnstile 通过
+        print("🔐 等待 Turnstile 验证...")
+        token = poll_turnstile_token(page, timeout=120)
+        if token:
+            print(f"✅ Turnstile 已通过 (token: {token[:30]}...)")
+        else:
+            print("⚠️  Turnstile 未通过，尝试继续...")
+
+        # 4. 填写邮箱
         email_input = page.ele("@name=email") or page.ele("@name=username") or page.ele("@type=email")
         if not email_input:
             print("❌ 未找到邮箱输入框")
@@ -307,32 +306,39 @@ def register_with_browser_solver(email, password):
         email_input.input(email)
         print(f"📧 已填写邮箱: {email}")
 
-        # 3. 等待 Turnstile 验证并提交（参考 Grok 流程）
-        time.sleep(2)
-        result = wait_for_turnstile_and_submit(page, timeout=120)
-        if not result:
-            print("⚠️  Turnstile 未通过，尝试直接提交...")
-            submit_btn = page.ele("@type=submit") or page.ele("text():Continue")
+        # 5. 提交表单
+        time.sleep(1)
+        submit_btn = page.ele("@type=submit") or page.ele("text():Continue") or page.ele("text():Sign Up")
+        if submit_btn:
+            submit_btn.click()
+            print("🖱️  已提交表单")
+        time.sleep(5)
+
+        # 4. 等待密码页面（Tavily 先要密码再要验证码）
+        print("⏳ 等待密码页面...")
+        password_input = wait_for_element(page, "@name=password", timeout=10)
+        if not password_input:
+            password_input = page.ele("@type=password")
+
+        if password_input:
+            print("✅ 到达密码页面")
+            password_input.clear()
+            password_input.input(password)
+            print("🔑 已填写密码")
+
+            # 点击提交按钮
+            time.sleep(1)
+            submit_btn = page.ele("@type=submit") or page.ele("text():Continue") or page.ele("text():Create Account")
             if submit_btn:
                 submit_btn.click()
-            time.sleep(5)
+                print("🖱️  已提交密码")
+            time.sleep(3)
+        else:
+            print("⚠️  未检测到密码页面")
 
-        # 4. 等待验证码页面
+        # 5. 等待验证码页面
         print("⏳ 等待验证码页面...")
-        code_input = wait_for_element(page, "@name=code", timeout=30)
-        password_input = wait_for_element(page, "@name=password", timeout=5)
-
-        if not code_input and not password_input:
-            # 检查是否有错误提示
-            try:
-                error_ele = page.ele("@role=alert") or page.ele(".error")
-                if error_ele:
-                    print(f"❌ 页面错误: {error_ele.text}")
-            except Exception:
-                pass
-            print(f"❌ 未到达验证码/密码页面: {page.url}")
-            return None
-
+        code_input = wait_for_element(page, "@name=code", timeout=10)
         if code_input:
             print("✅ 到达验证码页面")
             code = get_email_code(email, timeout=EMAIL_CODE_TIMEOUT)
@@ -344,48 +350,59 @@ def register_with_browser_solver(email, password):
             code_input.input(code)
             print(f"🔢 已填写验证码: {code}")
 
-            # 等待 Turnstile
-            time.sleep(2)
-            result = wait_for_turnstile_and_submit(page, timeout=120)
-            if not result:
-                submit_btn = page.ele("@type=submit") or page.ele("text():Continue")
-                if submit_btn:
-                    submit_btn.click()
-                time.sleep(3)
-
-        # 5. 等待密码页面
-        print("⏳ 等待密码页面...")
-        password_input = wait_for_element(page, "@name=password", timeout=30)
-        if not password_input:
-            password_input = page.ele("@type=password")
-
-        if password_input:
-            print("✅ 到达密码页面")
-            password_input.clear()
-            password_input.input(password)
-            print("🔑 已填写密码")
-
-            # 等待 Turnstile
-            time.sleep(2)
-            result = wait_for_turnstile_and_submit(page, timeout=120)
-            if not result:
-                submit_btn = page.ele("@type=submit") or page.ele("text():Continue")
-                if submit_btn:
-                    submit_btn.click()
-                time.sleep(5)
+            # 点击提交
+            time.sleep(1)
+            submit_btn = page.ele("@type=submit") or page.ele("text():Continue") or page.ele("text():Verify")
+            if submit_btn:
+                submit_btn.click()
+                print("🖱️  已提交验证码")
+            time.sleep(5)
         else:
-            print("⚠️  未检测到密码页面")
+            print("⚠️  未检测到验证码页面")
 
-        # 6. 检查是否需要邮件验证
+        # 6. 检查是否需要邮件验证（页面可能提示验证邮箱）
         time.sleep(3)
         current_url = page.url
+        need_verify = False
+        
+        # 检查 URL 或页面内容是否提示需要验证
         if "verify" in current_url.lower():
+            need_verify = True
+        else:
+            # 检查页面是否有验证邮箱的提示
+            html = page.html
+            if any(kw in html.lower() for kw in ["verify your email", "confirm your email", "验证邮箱", "确认邮箱", "email verification"]):
+                need_verify = True
+            # 检查是否有重新发送验证邮件的按钮
+            resend = page.ele("text():Resend") or page.ele("text():resend") or page.ele("text():重新发送")
+            if resend:
+                need_verify = True
+        
+        if need_verify:
             print("📧 需要邮件验证")
-            verify_url = get_verification_link(email, timeout=60)
+            # 点击重新发送验证邮件（如果有的话）
+            resend = page.ele("text():Resend") or page.ele("text():resend") or page.ele("text():重新发送")
+            if resend:
+                resend.click()
+                print("🖱️  已点击重新发送验证邮件")
+                time.sleep(3)
+            
+            # 等待验证链接
+            verify_url = get_verification_link(email, timeout=120)
             if verify_url:
+                print(f"✅ 获取到验证链接: {verify_url[:50]}...")
                 page.get(verify_url)
                 page.wait.doc_loaded()
-                time.sleep(3)
+                time.sleep(5)
+                
+                # 验证后可能需要重新登录
+                if "login" in page.url.lower() or "sign-in" in page.url.lower():
+                    print("验证后需要重新登录")
+                    # 重新登录流程...
+            else:
+                print("⚠️  未获取到验证链接，尝试继续...")
+        else:
+            print("✅ 无需邮件验证")
 
         # 7. 获取 API Key
         print("🔑 获取 API Key...")

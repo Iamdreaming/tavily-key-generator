@@ -176,6 +176,15 @@ def _extract_verification_link(message):
         for raw in re.findall(r'https://[^\s<>"\']+', content, re.IGNORECASE)
     ]
 
+    # 过滤掉图片和静态资源链接
+    skip_extensions = ('.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.ico', '.css', '.js')
+    skip_domains = ('cdn.auth0.com', 'cdn.', 'static.', 'images.', 'img.')
+    urls = [
+        url for url in urls
+        if not any(url.lower().endswith(ext) for ext in skip_extensions)
+        and not any(domain in url.lower() for domain in skip_domains)
+    ]
+
     primary_link_hints = ("verif", "confirm", "magic", "auth", "callback", "signin", "signup")
     primary_host_hints = ("tavily", "firecrawl", "clerk", "stytch", "auth", "login")
     for url in urls:
