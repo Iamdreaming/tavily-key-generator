@@ -127,3 +127,7 @@ EMAIL_POLL_INTERVAL = _get_int("EMAIL_POLL_INTERVAL", 3)
 SOLVER_PORT = _get_str("SOLVER_PORT", "5073")
 LOCAL_SOLVER_URL = _get_str("LOCAL_SOLVER_URL", f"http://127.0.0.1:{SOLVER_PORT}")
 SOLVER_THREADS = _get_int("SOLVER_THREADS", 1)
+
+# 代理配置（Webshare 住宅代理，格式 host:port:user:pass，逗号分隔）
+_proxy_raw = _get_str("PROXY_SERVERS", "")
+PROXY_SERVERS = [p.strip() for p in _proxy_raw.split(",") if p.strip()]

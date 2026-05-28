@@ -4,6 +4,7 @@
 """
 import os
 import re
+import sys
 import time
 import threading
 import requests as std_requests
@@ -12,6 +13,7 @@ from DrissionPage import Chromium, ChromiumOptions
 from config import (
     EMAIL_CODE_TIMEOUT,
     REGISTER_HEADLESS,
+    PROXY_SERVERS,
 )
 from mail_provider import get_email_code, get_verification_link
 
@@ -21,13 +23,80 @@ _SAVE_FILE = os.path.join(_HERE, "accounts.txt")
 _SAVE_LOCK = threading.Lock()
 
 
+_BROWSER_COUNTER = 0
+_BROWSER_COUNTER_LOCK = threading.Lock()
+_PROXY_COUNTER = 0
+_PROXY_COUNTER_LOCK = threading.Lock()
+_LOCAL_PROXY_BASE_PORT = 18080
+_PROXY_FORWARDER_PROCS = []
+
+
+def _get_next_proxy():
+    """轮询获取下一个代理（host, port, user, pass）"""
+    global _PROXY_COUNTER
+    if not PROXY_SERVERS:
+        return None
+    with _PROXY_COUNTER_LOCK:
+        proxy_str = PROXY_SERVERS[_PROXY_COUNTER % len(PROXY_SERVERS)]
+        _PROXY_COUNTER += 1
+    parts = proxy_str.split(":")
+    if len(parts) == 4:
+        return parts  # host, port, user, pass
+    elif len(parts) == 2:
+        return parts[0], parts[1], None, None
+    return None
+
+
+def _start_local_proxy(local_port, upstream_host, upstream_port, user, password):
+    """启动本地代理转发器进程"""
+    import subprocess
+    forwarder_script = os.path.join(_HERE, "proxy_forwarder.py")
+    upstream = f"{upstream_host}:{upstream_port}:{user}:{password}"
+    proc = subprocess.Popen(
+        [sys.executable, forwarder_script, str(local_port), upstream],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    )
+    _PROXY_FORWARDER_PROCS.append(proc)
+    time.sleep(1)  # 等待启动
+    return proc
+
+
 def create_browser_options():
-    """创建浏览器配置"""
+    """创建浏览器配置（每个实例独立端口、用户数据目录、代理）"""
+    global _BROWSER_COUNTER
+    with _BROWSER_COUNTER_LOCK:
+        _BROWSER_COUNTER += 1
+        instance_id = _BROWSER_COUNTER
+
     options = ChromiumOptions()
-    options.auto_port()
+    # 用不同端口范围避免冲突
+    port = 9222 + instance_id * 10
+    options.set_local_port(port)
     options.set_timeouts(base=1)
     if REGISTER_HEADLESS:
         options.headless()
+    # 每个实例独立用户数据目录
+    user_data = os.path.join(_HERE, ".browser_profiles", f"profile_{instance_id}")
+    options.set_user_data_path(user_data)
+    # 反检测
+    options.set_argument('--disable-blink-features=AutomationControlled')
+    options.set_argument('--no-first-run')
+    options.set_argument('--no-default-browser-check')
+    options.set_argument('--disable-infobars')
+    options.set_argument('--window-size=1280,900')
+    # 代理（通过本地转发器）
+    proxy_info = _get_next_proxy()
+    if proxy_info:
+        host, port_str, user, pwd = proxy_info
+        local_port = _LOCAL_PROXY_BASE_PORT + instance_id
+        if user:
+            _start_local_proxy(local_port, host, port_str, user, pwd)
+            options.set_argument(f'--proxy-server=http://127.0.0.1:{local_port}')
+            print(f"  [proxy] 本地转发 127.0.0.1:{local_port} → {host}:{port_str}")
+        else:
+            options.set_argument(f'--proxy-server=http://{host}:{port_str}')
+            print(f"  [proxy] 直连 {host}:{port_str}")
     # 加载 Turnstile 反检测扩展
     extension_path = os.path.join(_HERE, "turnstilePatch")
     if os.path.exists(extension_path):
@@ -37,11 +106,34 @@ def create_browser_options():
 
 def start_browser():
     """启动 Chrome 浏览器"""
+    # 清理旧的浏览器 profile（避免残留 session）
+    import shutil
+    profiles_dir = os.path.join(_HERE, ".browser_profiles")
+    if os.path.exists(profiles_dir):
+        shutil.rmtree(profiles_dir, ignore_errors=True)
+    proxy_ext_dir = os.path.join(_HERE, ".proxy_ext")
+    if os.path.exists(proxy_ext_dir):
+        shutil.rmtree(proxy_ext_dir, ignore_errors=True)
+
     options = create_browser_options()
     browser = Chromium(options)
     tabs = browser.get_tabs()
     page = tabs[-1] if tabs else browser.new_tab()
     return browser, page
+
+
+def cleanup_proxy_forwarders():
+    """清理所有代理转发器进程"""
+    for proc in _PROXY_FORWARDER_PROCS:
+        try:
+            proc.terminate()
+            proc.wait(timeout=3)
+        except:
+            try:
+                proc.kill()
+            except:
+                pass
+    _PROXY_FORWARDER_PROCS.clear()
 
 
 def extract_signup_url(html):
@@ -323,20 +415,27 @@ def register_with_browser_solver(email, password):
 
         # 1. 访问登录页
         page.get("https://app.tavily.com/sign-in")
-        time.sleep(8)
+        time.sleep(20)  # 代理加载更慢，需要更长等待
 
         # 2. 点击 Sign up 链接切换到注册表单（用 JS 点击，DrissionPage 选择器不可靠）
-        clicked = page.run_js('''
-          var link = document.querySelector('a[href*="signup"]');
-          if (link) {
-            link.click();
-            return true;
-          }
-          return false;
-        ''')
+        # 重试几次，因为代理加载可能更慢
+        clicked = False
+        for attempt in range(3):
+            clicked = page.run_js('''
+              var link = document.querySelector('a[href*="signup"]');
+              if (link) {
+                link.click();
+                return true;
+              }
+              return false;
+            ''')
+            if clicked:
+                break
+            time.sleep(3)
+        
         if clicked:
             print("🖱️  已切换到注册表单")
-            time.sleep(3)
+            time.sleep(5)
         else:
             print("⚠️  未找到 Sign up 链接，可能已在注册表单")
 
@@ -460,7 +559,28 @@ def register_with_browser_solver(email, password):
                 # 验证后可能需要重新登录
                 if "login" in page.url.lower() or "sign-in" in page.url.lower():
                     print("验证后需要重新登录")
-                    # 重新登录流程...
+                    time.sleep(3)
+                    # 填写邮箱
+                    re_email = wait_for_element(page, "@name=username", timeout=10)
+                    if re_email:
+                        re_email.clear()
+                        re_email.input(email)
+                        time.sleep(1)
+                        btn = page.ele("@type=submit")
+                        if btn:
+                            btn.click()
+                        time.sleep(5)
+                    # 填写密码
+                    re_pw = wait_for_element(page, "@name=password", timeout=10)
+                    if re_pw:
+                        re_pw.clear()
+                        re_pw.input(password)
+                        time.sleep(1)
+                        btn = page.ele("@type=submit") or page.ele("text():Continue") or page.ele("text():Log in")
+                        if btn:
+                            btn.click()
+                        time.sleep(8)
+                    print(f"重新登录后 URL: {page.url}")
             else:
                 print("⚠️  未获取到验证链接，尝试继续...")
         else:
