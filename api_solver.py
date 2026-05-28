@@ -831,16 +831,18 @@ class TurnstileAPIServer:
                     # 方法1: 用 turnstile.getResponse() 获取 token（最可靠）
                     try:
                         token = await page.evaluate("""
-                            try {
-                                const byInput = String(
-                                    (document.querySelector('input[name="cf-turnstile-response"]') || {}).value || ''
-                                ).trim();
-                                if (byInput) return byInput;
-                                if (window.turnstile && typeof turnstile.getResponse === 'function') {
-                                    return String(turnstile.getResponse() || '').trim();
-                                }
-                                return '';
-                            } catch(e) { return ''; }
+                            (() => {
+                                try {
+                                    const byInput = String(
+                                        (document.querySelector('input[name="cf-turnstile-response"]') || {}).value || ''
+                                    ).trim();
+                                    if (byInput) return byInput;
+                                    if (window.turnstile && typeof turnstile.getResponse === 'function') {
+                                        return String(turnstile.getResponse() || '').trim();
+                                    }
+                                    return '';
+                                } catch(e) { return ''; }
+                            })()
                         """)
                         token = str(token or "").strip()
                         if len(token) >= 80:
