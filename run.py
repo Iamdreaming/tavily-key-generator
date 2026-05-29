@@ -537,10 +537,13 @@ def do_register_parallel(count, delay, upload, concurrency, service="tavily"):
     print(f"⚙️  本轮并发: {actual_concurrency}")
 
     if actual_concurrency == 1:
+        import random
         for i in range(count):
             if i > 0:
-                print(f"\n⏳ 等待 {delay} 秒...\n")
-                time.sleep(delay)
+                jitter = random.randint(-5, 15)
+                wait_time = max(15, delay + jitter)
+                print(f"\n⏳ 等待 {wait_time} 秒...\n")
+                time.sleep(wait_time)
             status = register_one(i + 1, count, upload, service)
             if status in {"success", "success_no_key"}:
                 success += 1

@@ -472,30 +472,74 @@ def register_with_browser_solver(email, password):
         if not password_input:
             password_input = page.ele("@type=password")
 
-        if password_input:
-            # 判断是注册密码页还是登录密码页
-            page_title = page.title.lower()
-            page_url = page.url.lower()
-            is_login = "login" in page_title or "log in" in page_title or "/login/" in page_url
-            if is_login:
-                print("⚠️  邮箱已被注册，进入了登录页面")
-                # TODO: 可以换邮箱重试
+        if not password_input:
+            # 检查是否卡在邮箱页面（频率限制/被拒）
+            post_email_url = page.url.lower()
+            if "/signup/identifier" in post_email_url or "/signup" in post_email_url:
+                err_msg = ""
+                try:
+                    body_text = page.ele("tag:body").text if page.ele("tag:body") else ""
+                    for kw in ["blocked", "too many", "rate limit", "try again", "already exists", "invalid"]:
+                        if kw in body_text.lower():
+                            idx = body_text.lower().index(kw)
+                            err_msg = body_text[max(0,idx-20):idx+80].strip()
+                            break
+                except Exception:
+                    pass
+                if err_msg:
+                    print(f"❌ 邮箱提交被拒: {err_msg}")
+                else:
+                    print(f"❌ 邮箱提交后未到密码页 (URL: {page.url})")
                 return None
-            
-            print("✅ 到达注册密码页面")
-            password_input.clear()
-            password_input.input(password)
-            print("🔑 已填写密码")
-
-            # 点击提交按钮
-            time.sleep(1)
-            submit_btn = page.ele("@type=submit") or page.ele("text():Continue") or page.ele("text():Create Account")
-            if submit_btn:
-                submit_btn.click()
-                print("🖱️  已提交密码")
-            time.sleep(5)
-        else:
             print("⚠️  未检测到密码页面")
+            return None
+
+        # 判断是注册密码页还是登录密码页
+        page_title = page.title.lower()
+        page_url = page.url.lower()
+        is_login = "login" in page_title or "log in" in page_title or "/login/" in page_url
+        if is_login:
+            print("⚠️  邮箱已被注册，进入了登录页面")
+            return None
+        
+        print("✅ 到达注册密码页面")
+        password_input.clear()
+        password_input.input(password)
+        print("🔑 已填写密码")
+
+        # 点击提交按钮
+        time.sleep(1)
+        submit_btn = page.ele("@type=submit") or page.ele("text():Continue") or page.ele("text():Create Account")
+        if submit_btn:
+            submit_btn.click()
+            print("🖱️  已提交密码")
+        # 等待密码提交后的页面跳转
+        time.sleep(5)
+        # 检查是否被拒（仍停在密码页 = 被频率限制或密码不合规）
+        post_pw_url = page.url.lower()
+        if "/signup/password" in post_pw_url:
+            # 读取页面错误信息
+            err_msg = ""
+            try:
+                for sel in ["@role=alert", ".error-message", ".error", "[data-error]", "text():blocked", "text():too many", "text():rate", "text():invalid"]:
+                    err_ele = page.ele(sel)
+                    if err_ele and err_ele.text:
+                        err_msg = err_ele.text.strip()
+                        break
+                if not err_msg:
+                    body_text = page.ele("tag:body").text if page.ele("tag:body") else ""
+                    for kw in ["blocked", "too many", "rate limit", "try again", "invalid password", "doesn't meet"]:
+                        if kw in body_text.lower():
+                            idx = body_text.lower().index(kw)
+                            err_msg = body_text[max(0,idx-20):idx+80].strip()
+                            break
+            except Exception:
+                pass
+            if err_msg:
+                print(f"❌ 密码提交被拒: {err_msg}")
+            else:
+                print(f"❌ 密码提交被拒，仍停在密码页 (URL: {page.url})")
+            return None
 
         # 5. 等待验证码页面
         print("⏳ 等待验证码页面...")
