@@ -1,0 +1,673 @@
+
+============================================================
+[1/20] 开始注册... 04:47:38
+============================================================
+  [cf_temp_email] 创建邮箱: tavily-tfdvp21f@chatai1.nightrain.ggff.net
+  [cf_temp_email] API: https://cloudflare_temp_email.ccrt.workers.dev/admin/new_address
+  [cf_temp_email] 响应状态: 200
+  [cf_temp_email] 创建成功: tmptavilytfdvp21f@chatai1.nightrain.ggff.net
+✅ 邮箱(cloudflare_temp_email): tmptavilytfdvp21f@chatai1.nightrain.ggff.net
+🌐 使用 DrissionPage 浏览器模式注册: tmptavilytfdvp21f@chatai1.nightrain.ggff.net
+✅ 浏览器已启动
+🖱️  已切换到注册表单
+🔐 等待 Turnstile 验证...
+  [turnstile] Token 已获取，长度=730
+✅ Turnstile 已通过 (token: 1.TFEAuYsddQaZ8xWOxNElwRdQUDix...)
+📧 已填写邮箱: tmptavilytfdvp21f@chatai1.nightrain.ggff.net
+🖱️  已提交表单
+⏳ 等待密码页面...
+✅ 到达注册密码页面
+🔑 已填写密码
+🖱️  已提交密码
+⏳ 等待验证码页面...
+⚠️  未检测到验证码页面
+📧 需要邮件验证
+⏳ 等待验证邮件（最多 120 秒）...  [cf_temp_email] 读取邮件: tmptavilytfdvp21f@chatai1.nightrain.ggff.net
+  [cf_temp_email] 邮件响应: 200
+  [cf_temp_email] 收到 1 封邮件
+
+✅ 找到验证链接
+✅ 获取到验证链接: https://auth.tavily.com/u/email-verification?ticke...
+🔑 获取 API Key...
+🧪 验证 API Key 可用性...
+✅ API Key 调用测试通过
+🎉 注册成功
+   邮箱: tmptavilytfdvp21f@chatai1.nightrain.ggff.net
+   密码: Tvucajpx499!A
+   Key : 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
+
+✅ [1/20] 成功 (103s) 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
+📊 统计: 1成功 / 0失败 / 1总 = 100%
+
+============================================================
+[2/20] 开始注册... 04:49:24
+============================================================
+  [cf_temp_email] 创建邮箱: tavily-wjzwdyxb@chatai1.nightrain.ggff.net
+  [cf_temp_email] API: https://cloudflare_temp_email.ccrt.workers.dev/admin/new_address
+  [cf_temp_email] 响应状态: 200
+  [cf_temp_email] 创建成功: tmptavilywjzwdyxb@chatai1.nightrain.ggff.net
+✅ 邮箱(cloudflare_temp_email): tmptavilywjzwdyxb@chatai1.nightrain.ggff.net
+🌐 使用 DrissionPage 浏览器模式注册: tmptavilywjzwdyxb@chatai1.nightrain.ggff.net
+✅ 浏览器已启动
+🖱️  已切换到注册表单
+🔐 等待 Turnstile 验证...
+  [turnstile] Token 已获取，长度=730
+✅ Turnstile 已通过 (token: 1._sfvdkNzwnlFZWBckxdYTNVvEHdq...)
+📧 已填写邮箱: tmptavilywjzwdyxb@chatai1.nightrain.ggff.net
+🖱️  已提交表单
+⏳ 等待密码页面...
+✅ 到达注册密码页面
+🔑 已填写密码
+🖱️  已提交密码
+⏳ 等待验证码页面...
+⚠️  未检测到验证码页面
+📧 需要邮件验证
+⏳ 等待验证邮件（最多 120 秒）...  [cf_temp_email] 读取邮件: tmptavilywjzwdyxb@chatai1.nightrain.ggff.net
+  [cf_temp_email] 邮件响应: 200
+  [cf_temp_email] 收到 1 封邮件
+
+✅ 找到验证链接
+✅ 获取到验证链接: https://auth.tavily.com/u/email-verification?ticke...
+🔑 获取 API Key...
+🧪 验证 API Key 可用性...
+✅ API Key 调用测试通过
+🎉 注册成功
+   邮箱: tmptavilywjzwdyxb@chatai1.nightrain.ggff.net
+   密码: Tvrbtpbc899!A
+   Key : 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
+
+✅ [2/20] 成功 (121s) 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
+📊 统计: 2成功 / 0失败 / 2总 = 100%
+
+============================================================
+[3/20] 开始注册... 04:51:28
+============================================================
+  [cf_temp_email] 创建邮箱: tavily-t40tc83x@chatai1.nightrain.ggff.net
+  [cf_temp_email] API: https://cloudflare_temp_email.ccrt.workers.dev/admin/new_address
+  [cf_temp_email] 响应状态: 200
+  [cf_temp_email] 创建成功: tmptavilyt40tc83x@chatai1.nightrain.ggff.net
+✅ 邮箱(cloudflare_temp_email): tmptavilyt40tc83x@chatai1.nightrain.ggff.net
+🌐 使用 DrissionPage 浏览器模式注册: tmptavilyt40tc83x@chatai1.nightrain.ggff.net
+✅ 浏览器已启动
+🖱️  已切换到注册表单
+🔐 等待 Turnstile 验证...
+  [turnstile] Token 已获取，长度=730
+✅ Turnstile 已通过 (token: 1.RXZNFtlU7sFMFHGIvnzcnRcmtp9Y...)
+📧 已填写邮箱: tmptavilyt40tc83x@chatai1.nightrain.ggff.net
+🖱️  已提交表单
+⏳ 等待密码页面...
+✅ 到达注册密码页面
+🔑 已填写密码
+🖱️  已提交密码
+⏳ 等待验证码页面...
+⚠️  未检测到验证码页面
+📧 需要邮件验证
+⏳ 等待验证邮件（最多 120 秒）...  [cf_temp_email] 读取邮件: tmptavilyt40tc83x@chatai1.nightrain.ggff.net
+  [cf_temp_email] 邮件响应: 200
+  [cf_temp_email] 收到 1 封邮件
+
+✅ 找到验证链接
+✅ 获取到验证链接: https://auth.tavily.com/u/email-verification?ticke...
+🔑 获取 API Key...
+🧪 验证 API Key 可用性...
+✅ API Key 调用测试通过
+🎉 注册成功
+   邮箱: tmptavilyt40tc83x@chatai1.nightrain.ggff.net
+   密码: Tvyhdc5a609!A
+   Key : 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
+
+✅ [3/20] 成功 (121s) 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
+📊 统计: 3成功 / 0失败 / 3总 = 100%
+
+============================================================
+[4/20] 开始注册... 04:53:32
+============================================================
+  [cf_temp_email] 创建邮箱: tavily-ecxn5bob@chatai1.nightrain.ggff.net
+  [cf_temp_email] API: https://cloudflare_temp_email.ccrt.workers.dev/admin/new_address
+  [cf_temp_email] 响应状态: 200
+  [cf_temp_email] 创建成功: tmptavilyecxn5bob@chatai1.nightrain.ggff.net
+✅ 邮箱(cloudflare_temp_email): tmptavilyecxn5bob@chatai1.nightrain.ggff.net
+🌐 使用 DrissionPage 浏览器模式注册: tmptavilyecxn5bob@chatai1.nightrain.ggff.net
+✅ 浏览器已启动
+🖱️  已切换到注册表单
+🔐 等待 Turnstile 验证...
+  [turnstile] Token 已获取，长度=730
+✅ Turnstile 已通过 (token: 1.8GAJ_R5lwke7TreP0F4QtqUuE8nZ...)
+📧 已填写邮箱: tmptavilyecxn5bob@chatai1.nightrain.ggff.net
+🖱️  已提交表单
+⏳ 等待密码页面...
+✅ 到达注册密码页面
+🔑 已填写密码
+🖱️  已提交密码
+⏳ 等待验证码页面...
+⚠️  未检测到验证码页面
+📧 需要邮件验证
+⏳ 等待验证邮件（最多 120 秒）...  [cf_temp_email] 读取邮件: tmptavilyecxn5bob@chatai1.nightrain.ggff.net
+  [cf_temp_email] 邮件响应: 200
+  [cf_temp_email] 收到 1 封邮件
+
+✅ 找到验证链接
+✅ 获取到验证链接: https://auth.tavily.com/u/email-verification?ticke...
+🔑 获取 API Key...
+🧪 验证 API Key 可用性...
+✅ API Key 调用测试通过
+🎉 注册成功
+   邮箱: tmptavilyecxn5bob@chatai1.nightrain.ggff.net
+   密码: Tvcf4xuh957!A
+   Key : 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
+
+✅ [4/20] 成功 (122s) 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
+📊 统计: 4成功 / 0失败 / 4总 = 100%
+
+============================================================
+[5/20] 开始注册... 04:55:37
+============================================================
+  [cf_temp_email] 创建邮箱: tavily-s200cfg8@chatai1.nightrain.ggff.net
+  [cf_temp_email] API: https://cloudflare_temp_email.ccrt.workers.dev/admin/new_address
+  [cf_temp_email] 响应状态: 200
+  [cf_temp_email] 创建成功: tmptavilys200cfg8@chatai1.nightrain.ggff.net
+✅ 邮箱(cloudflare_temp_email): tmptavilys200cfg8@chatai1.nightrain.ggff.net
+🌐 使用 DrissionPage 浏览器模式注册: tmptavilys200cfg8@chatai1.nightrain.ggff.net
+✅ 浏览器已启动
+🖱️  已切换到注册表单
+🔐 等待 Turnstile 验证...
+  [turnstile] Token 已获取，长度=730
+✅ Turnstile 已通过 (token: 1.dRMxWT_x6yUfYuU7dLlrlSacHLzw...)
+📧 已填写邮箱: tmptavilys200cfg8@chatai1.nightrain.ggff.net
+🖱️  已提交表单
+⏳ 等待密码页面...
+✅ 到达注册密码页面
+🔑 已填写密码
+🖱️  已提交密码
+⏳ 等待验证码页面...
+⚠️  未检测到验证码页面
+📧 需要邮件验证
+⏳ 等待验证邮件（最多 120 秒）...  [cf_temp_email] 读取邮件: tmptavilys200cfg8@chatai1.nightrain.ggff.net
+  [cf_temp_email] 邮件响应: 200
+  [cf_temp_email] 收到 1 封邮件
+
+✅ 找到验证链接
+✅ 获取到验证链接: https://auth.tavily.com/u/email-verification?ticke...
+🔑 获取 API Key...
+⚠️  未找到 API Key
+
+❌ [5/20] 失败 (140s)
+📊 统计: 4成功 / 1失败 / 5总 = 80%
+
+============================================================
+[6/20] 开始注册... 04:58:01
+============================================================
+  [cf_temp_email] 创建邮箱: tavily-dzi01m73@chatai1.nightrain.ggff.net
+  [cf_temp_email] API: https://cloudflare_temp_email.ccrt.workers.dev/admin/new_address
+  [cf_temp_email] 响应状态: 200
+  [cf_temp_email] 创建成功: tmptavilydzi01m73@chatai1.nightrain.ggff.net
+✅ 邮箱(cloudflare_temp_email): tmptavilydzi01m73@chatai1.nightrain.ggff.net
+🌐 使用 DrissionPage 浏览器模式注册: tmptavilydzi01m73@chatai1.nightrain.ggff.net
+✅ 浏览器已启动
+🖱️  已切换到注册表单
+🔐 等待 Turnstile 验证...
+  [turnstile] Token 已获取，长度=730
+✅ Turnstile 已通过 (token: 1.8g-9Vp1G_P8TZQ1EqMT3D9Ne1eKm...)
+📧 已填写邮箱: tmptavilydzi01m73@chatai1.nightrain.ggff.net
+🖱️  已提交表单
+⏳ 等待密码页面...
+✅ 到达注册密码页面
+🔑 已填写密码
+🖱️  已提交密码
+⏳ 等待验证码页面...
+⚠️  未检测到验证码页面
+✅ 无需邮件验证
+🔑 获取 API Key...
+⚠️  未找到 API Key
+
+❌ [6/20] 失败 (99s)
+📊 统计: 4成功 / 2失败 / 6总 = 67%
+
+============================================================
+[7/20] 开始注册... 04:59:42
+============================================================
+  [cf_temp_email] 创建邮箱: tavily-xlkm37yu@chatai1.nightrain.ggff.net
+  [cf_temp_email] API: https://cloudflare_temp_email.ccrt.workers.dev/admin/new_address
+  [cf_temp_email] 响应状态: 200
+  [cf_temp_email] 创建成功: tmptavilyxlkm37yu@chatai1.nightrain.ggff.net
+✅ 邮箱(cloudflare_temp_email): tmptavilyxlkm37yu@chatai1.nightrain.ggff.net
+🌐 使用 DrissionPage 浏览器模式注册: tmptavilyxlkm37yu@chatai1.nightrain.ggff.net
+✅ 浏览器已启动
+🖱️  已切换到注册表单
+🔐 等待 Turnstile 验证...
+  [turnstile] Token 已获取，长度=730
+✅ Turnstile 已通过 (token: 1.ZRdCtuO1fAqNEIjOBhWAhxwKhELh...)
+📧 已填写邮箱: tmptavilyxlkm37yu@chatai1.nightrain.ggff.net
+🖱️  已提交表单
+⏳ 等待密码页面...
+✅ 到达注册密码页面
+🔑 已填写密码
+🖱️  已提交密码
+⏳ 等待验证码页面...
+⚠️  未检测到验证码页面
+✅ 无需邮件验证
+🔑 获取 API Key...
+⚠️  未找到 API Key
+
+❌ [7/20] 失败 (102s)
+📊 统计: 4成功 / 3失败 / 7总 = 57%
+
+============================================================
+[8/20] 开始注册... 05:01:28
+============================================================
+  [cf_temp_email] 创建邮箱: tavily-y1vj33jw@chatai1.nightrain.ggff.net
+  [cf_temp_email] API: https://cloudflare_temp_email.ccrt.workers.dev/admin/new_address
+  [cf_temp_email] 响应状态: 200
+  [cf_temp_email] 创建成功: tmptavilyy1vj33jw@chatai1.nightrain.ggff.net
+✅ 邮箱(cloudflare_temp_email): tmptavilyy1vj33jw@chatai1.nightrain.ggff.net
+🌐 使用 DrissionPage 浏览器模式注册: tmptavilyy1vj33jw@chatai1.nightrain.ggff.net
+✅ 浏览器已启动
+🖱️  已切换到注册表单
+🔐 等待 Turnstile 验证...
+  [turnstile] 超时 (120s)，点击了 0 次
+⚠️  Turnstile 未通过，尝试继续...
+📧 已填写邮箱: tmptavilyy1vj33jw@chatai1.nightrain.ggff.net
+🖱️  已提交表单
+⏳ 等待密码页面...
+⚠️  未检测到密码页面
+⏳ 等待验证码页面...
+⚠️  未检测到验证码页面
+✅ 无需邮件验证
+🔑 获取 API Key...
+⚠️  未找到 API Key
+
+❌ [8/20] 失败 (227s)
+📊 统计: 4成功 / 4失败 / 8总 = 50%
+
+============================================================
+[9/20] 开始注册... 05:05:18
+============================================================
+  [cf_temp_email] 创建邮箱: tavily-3cecult5@chatai1.nightrain.ggff.net
+  [cf_temp_email] API: https://cloudflare_temp_email.ccrt.workers.dev/admin/new_address
+  [cf_temp_email] 响应状态: 200
+  [cf_temp_email] 创建成功: tmptavily3cecult5@chatai1.nightrain.ggff.net
+✅ 邮箱(cloudflare_temp_email): tmptavily3cecult5@chatai1.nightrain.ggff.net
+🌐 使用 DrissionPage 浏览器模式注册: tmptavily3cecult5@chatai1.nightrain.ggff.net
+✅ 浏览器已启动
+🖱️  已切换到注册表单
+🔐 等待 Turnstile 验证...
+  [turnstile] Token 已获取，长度=730
+✅ Turnstile 已通过 (token: 1.a_GvK6XLS_fMdi22oMRyuJyniWqa...)
+📧 已填写邮箱: tmptavily3cecult5@chatai1.nightrain.ggff.net
+🖱️  已提交表单
+⏳ 等待密码页面...
+✅ 到达注册密码页面
+🔑 已填写密码
+🖱️  已提交密码
+⏳ 等待验证码页面...
+⚠️  未检测到验证码页面
+📧 需要邮件验证
+⏳ 等待验证邮件（最多 120 秒）...  [cf_temp_email] 读取邮件: tmptavily3cecult5@chatai1.nightrain.ggff.net
+  [cf_temp_email] 邮件响应: 200
+  [cf_temp_email] 收到 1 封邮件
+
+✅ 找到验证链接
+✅ 获取到验证链接: https://auth.tavily.com/u/email-verification?ticke...
+🔑 获取 API Key...
+🧪 验证 API Key 可用性...
+✅ API Key 调用测试通过
+🎉 注册成功
+   邮箱: tmptavily3cecult5@chatai1.nightrain.ggff.net
+   密码: Tv7b2a6v105!A
+   Key : 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
+
+✅ [9/20] 成功 (101s) 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
+📊 统计: 5成功 / 4失败 / 9总 = 56%
+
+============================================================
+[10/20] 开始注册... 05:07:02
+============================================================
+  [cf_temp_email] 创建邮箱: tavily-lw65pvn9@chatai1.nightrain.ggff.net
+  [cf_temp_email] API: https://cloudflare_temp_email.ccrt.workers.dev/admin/new_address
+  [cf_temp_email] 响应状态: 200
+  [cf_temp_email] 创建成功: tmptavilylw65pvn9@chatai1.nightrain.ggff.net
+✅ 邮箱(cloudflare_temp_email): tmptavilylw65pvn9@chatai1.nightrain.ggff.net
+🌐 使用 DrissionPage 浏览器模式注册: tmptavilylw65pvn9@chatai1.nightrain.ggff.net
+✅ 浏览器已启动
+🖱️  已切换到注册表单
+🔐 等待 Turnstile 验证...
+  [turnstile] Token 已获取，长度=730
+✅ Turnstile 已通过 (token: 1.g5XM5ZY2uemWvKxI2LBSeXG5D7sj...)
+📧 已填写邮箱: tmptavilylw65pvn9@chatai1.nightrain.ggff.net
+🖱️  已提交表单
+⏳ 等待密码页面...
+✅ 到达注册密码页面
+🔑 已填写密码
+🖱️  已提交密码
+⏳ 等待验证码页面...
+⚠️  未检测到验证码页面
+✅ 无需邮件验证
+🔑 获取 API Key...
+⚠️  未找到 API Key
+
+❌ [10/20] 失败 (97s)
+📊 统计: 5成功 / 5失败 / 10总 = 50%
+
+============================================================
+[11/20] 开始注册... 05:08:42
+============================================================
+  [cf_temp_email] 创建邮箱: tavily-ec2swtwo@chatai1.nightrain.ggff.net
+  [cf_temp_email] API: https://cloudflare_temp_email.ccrt.workers.dev/admin/new_address
+  [cf_temp_email] 响应状态: 200
+  [cf_temp_email] 创建成功: tmptavilyec2swtwo@chatai1.nightrain.ggff.net
+✅ 邮箱(cloudflare_temp_email): tmptavilyec2swtwo@chatai1.nightrain.ggff.net
+🌐 使用 DrissionPage 浏览器模式注册: tmptavilyec2swtwo@chatai1.nightrain.ggff.net
+✅ 浏览器已启动
+🖱️  已切换到注册表单
+🔐 等待 Turnstile 验证...
+  [turnstile] Token 已获取，长度=730
+✅ Turnstile 已通过 (token: 1.qbJ-U3kEE52J7erkVmJZweXm7XPB...)
+📧 已填写邮箱: tmptavilyec2swtwo@chatai1.nightrain.ggff.net
+🖱️  已提交表单
+⏳ 等待密码页面...
+✅ 到达注册密码页面
+🔑 已填写密码
+🖱️  已提交密码
+⏳ 等待验证码页面...
+⚠️  未检测到验证码页面
+✅ 无需邮件验证
+🔑 获取 API Key...
+⚠️  未找到 API Key
+
+❌ [11/20] 失败 (98s)
+📊 统计: 5成功 / 6失败 / 11总 = 45%
+
+============================================================
+[12/20] 开始注册... 05:10:23
+============================================================
+  [cf_temp_email] 创建邮箱: tavily-atmnalaj@chatai1.nightrain.ggff.net
+  [cf_temp_email] API: https://cloudflare_temp_email.ccrt.workers.dev/admin/new_address
+  [cf_temp_email] 响应状态: 200
+  [cf_temp_email] 创建成功: tmptavilyatmnalaj@chatai1.nightrain.ggff.net
+✅ 邮箱(cloudflare_temp_email): tmptavilyatmnalaj@chatai1.nightrain.ggff.net
+🌐 使用 DrissionPage 浏览器模式注册: tmptavilyatmnalaj@chatai1.nightrain.ggff.net
+✅ 浏览器已启动
+🖱️  已切换到注册表单
+🔐 等待 Turnstile 验证...
+  [turnstile] Token 已获取，长度=730
+✅ Turnstile 已通过 (token: 1.y7jXuVFeBXdyPJ6U_48d6cEV2dPr...)
+📧 已填写邮箱: tmptavilyatmnalaj@chatai1.nightrain.ggff.net
+🖱️  已提交表单
+⏳ 等待密码页面...
+✅ 到达注册密码页面
+🔑 已填写密码
+🖱️  已提交密码
+⏳ 等待验证码页面...
+⚠️  未检测到验证码页面
+✅ 无需邮件验证
+🔑 获取 API Key...
+⚠️  未找到 API Key
+
+❌ [12/20] 失败 (98s)
+📊 统计: 5成功 / 7失败 / 12总 = 42%
+
+============================================================
+[13/20] 开始注册... 05:12:04
+============================================================
+  [cf_temp_email] 创建邮箱: tavily-wr1jnmp3@chatai1.nightrain.ggff.net
+  [cf_temp_email] API: https://cloudflare_temp_email.ccrt.workers.dev/admin/new_address
+  [cf_temp_email] 响应状态: 200
+  [cf_temp_email] 创建成功: tmptavilywr1jnmp3@chatai1.nightrain.ggff.net
+✅ 邮箱(cloudflare_temp_email): tmptavilywr1jnmp3@chatai1.nightrain.ggff.net
+🌐 使用 DrissionPage 浏览器模式注册: tmptavilywr1jnmp3@chatai1.nightrain.ggff.net
+✅ 浏览器已启动
+🖱️  已切换到注册表单
+🔐 等待 Turnstile 验证...
+  [turnstile] Token 已获取，长度=730
+✅ Turnstile 已通过 (token: 1.utvsuykl4ZajbpLJ7m_wM1xZFt_e...)
+📧 已填写邮箱: tmptavilywr1jnmp3@chatai1.nightrain.ggff.net
+🖱️  已提交表单
+⏳ 等待密码页面...
+✅ 到达注册密码页面
+🔑 已填写密码
+🖱️  已提交密码
+⏳ 等待验证码页面...
+⚠️  未检测到验证码页面
+✅ 无需邮件验证
+🔑 获取 API Key...
+⚠️  未找到 API Key
+
+❌ [13/20] 失败 (104s)
+📊 统计: 5成功 / 8失败 / 13总 = 38%
+
+============================================================
+[14/20] 开始注册... 05:13:51
+============================================================
+  [cf_temp_email] 创建邮箱: tavily-nu7p56if@chatai1.nightrain.ggff.net
+  [cf_temp_email] API: https://cloudflare_temp_email.ccrt.workers.dev/admin/new_address
+  [cf_temp_email] 响应状态: 200
+  [cf_temp_email] 创建成功: tmptavilynu7p56if@chatai1.nightrain.ggff.net
+✅ 邮箱(cloudflare_temp_email): tmptavilynu7p56if@chatai1.nightrain.ggff.net
+🌐 使用 DrissionPage 浏览器模式注册: tmptavilynu7p56if@chatai1.nightrain.ggff.net
+✅ 浏览器已启动
+🖱️  已切换到注册表单
+🔐 等待 Turnstile 验证...
+  [turnstile] Token 已获取，长度=730
+✅ Turnstile 已通过 (token: 1.PMqVCWSufCR1zsdthSM3VhmB0dUq...)
+📧 已填写邮箱: tmptavilynu7p56if@chatai1.nightrain.ggff.net
+🖱️  已提交表单
+⏳ 等待密码页面...
+✅ 到达注册密码页面
+🔑 已填写密码
+🖱️  已提交密码
+⏳ 等待验证码页面...
+⚠️  未检测到验证码页面
+✅ 无需邮件验证
+🔑 获取 API Key...
+⚠️  未找到 API Key
+
+❌ [14/20] 失败 (103s)
+📊 统计: 5成功 / 9失败 / 14总 = 36%
+
+============================================================
+[15/20] 开始注册... 05:15:37
+============================================================
+  [cf_temp_email] 创建邮箱: tavily-s9h2g3p2@chatai1.nightrain.ggff.net
+  [cf_temp_email] API: https://cloudflare_temp_email.ccrt.workers.dev/admin/new_address
+  [cf_temp_email] 响应状态: 200
+  [cf_temp_email] 创建成功: tmptavilys9h2g3p2@chatai1.nightrain.ggff.net
+✅ 邮箱(cloudflare_temp_email): tmptavilys9h2g3p2@chatai1.nightrain.ggff.net
+🌐 使用 DrissionPage 浏览器模式注册: tmptavilys9h2g3p2@chatai1.nightrain.ggff.net
+✅ 浏览器已启动
+🖱️  已切换到注册表单
+🔐 等待 Turnstile 验证...
+  [turnstile] 超时 (120s)，点击了 0 次
+⚠️  Turnstile 未通过，尝试继续...
+📧 已填写邮箱: tmptavilys9h2g3p2@chatai1.nightrain.ggff.net
+🖱️  已提交表单
+⏳ 等待密码页面...
+⚠️  未检测到密码页面
+⏳ 等待验证码页面...
+⚠️  未检测到验证码页面
+✅ 无需邮件验证
+🔑 获取 API Key...
+⚠️  未找到 API Key
+
+❌ [15/20] 失败 (225s)
+📊 统计: 5成功 / 10失败 / 15总 = 33%
+
+============================================================
+[16/20] 开始注册... 05:19:25
+============================================================
+  [cf_temp_email] 创建邮箱: tavily-txnorvou@chatai1.nightrain.ggff.net
+  [cf_temp_email] API: https://cloudflare_temp_email.ccrt.workers.dev/admin/new_address
+  [cf_temp_email] 响应状态: 200
+  [cf_temp_email] 创建成功: tmptavilytxnorvou@chatai1.nightrain.ggff.net
+✅ 邮箱(cloudflare_temp_email): tmptavilytxnorvou@chatai1.nightrain.ggff.net
+🌐 使用 DrissionPage 浏览器模式注册: tmptavilytxnorvou@chatai1.nightrain.ggff.net
+✅ 浏览器已启动
+🖱️  已切换到注册表单
+🔐 等待 Turnstile 验证...
+  [turnstile] Token 已获取，长度=730
+✅ Turnstile 已通过 (token: 1.GR4VsPGzP3xinZqf_dVWiq3NReUO...)
+📧 已填写邮箱: tmptavilytxnorvou@chatai1.nightrain.ggff.net
+🖱️  已提交表单
+⏳ 等待密码页面...
+✅ 到达注册密码页面
+🔑 已填写密码
+🖱️  已提交密码
+⏳ 等待验证码页面...
+⚠️  未检测到验证码页面
+📧 需要邮件验证
+⏳ 等待验证邮件（最多 120 秒）...  [cf_temp_email] 读取邮件: tmptavilytxnorvou@chatai1.nightrain.ggff.net
+  [cf_temp_email] 邮件响应: 200
+  [cf_temp_email] 收到 1 封邮件
+
+✅ 找到验证链接
+✅ 获取到验证链接: https://auth.tavily.com/u/email-verification?ticke...
+🔑 获取 API Key...
+🧪 验证 API Key 可用性...
+✅ API Key 调用测试通过
+🎉 注册成功
+   邮箱: tmptavilytxnorvou@chatai1.nightrain.ggff.net
+   密码: Tvwlqn0n301!A
+   Key : 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
+
+✅ [16/20] 成功 (123s) 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
+📊 统计: 6成功 / 10失败 / 16总 = 38%
+
+============================================================
+[17/20] 开始注册... 05:21:31
+============================================================
+  [cf_temp_email] 创建邮箱: tavily-0qsgdo9f@chatai1.nightrain.ggff.net
+  [cf_temp_email] API: https://cloudflare_temp_email.ccrt.workers.dev/admin/new_address
+  [cf_temp_email] 响应状态: 200
+  [cf_temp_email] 创建成功: tmptavily0qsgdo9f@chatai1.nightrain.ggff.net
+✅ 邮箱(cloudflare_temp_email): tmptavily0qsgdo9f@chatai1.nightrain.ggff.net
+🌐 使用 DrissionPage 浏览器模式注册: tmptavily0qsgdo9f@chatai1.nightrain.ggff.net
+✅ 浏览器已启动
+🖱️  已切换到注册表单
+🔐 等待 Turnstile 验证...
+  [turnstile] Token 已获取，长度=730
+✅ Turnstile 已通过 (token: 1.mprLmMwrNpuhy5xOC7kPwY46ccuN...)
+📧 已填写邮箱: tmptavily0qsgdo9f@chatai1.nightrain.ggff.net
+🖱️  已提交表单
+⏳ 等待密码页面...
+✅ 到达注册密码页面
+🔑 已填写密码
+🖱️  已提交密码
+⏳ 等待验证码页面...
+⚠️  未检测到验证码页面
+✅ 无需邮件验证
+🔑 获取 API Key...
+⚠️  未找到 API Key
+
+❌ [17/20] 失败 (100s)
+📊 统计: 6成功 / 11失败 / 17总 = 35%
+
+============================================================
+[18/20] 开始注册... 05:23:14
+============================================================
+  [cf_temp_email] 创建邮箱: tavily-0aze7jq1@chatai1.nightrain.ggff.net
+  [cf_temp_email] API: https://cloudflare_temp_email.ccrt.workers.dev/admin/new_address
+  [cf_temp_email] 响应状态: 200
+  [cf_temp_email] 创建成功: tmptavily0aze7jq1@chatai1.nightrain.ggff.net
+✅ 邮箱(cloudflare_temp_email): tmptavily0aze7jq1@chatai1.nightrain.ggff.net
+🌐 使用 DrissionPage 浏览器模式注册: tmptavily0aze7jq1@chatai1.nightrain.ggff.net
+✅ 浏览器已启动
+🖱️  已切换到注册表单
+🔐 等待 Turnstile 验证...
+  [turnstile] Token 已获取，长度=730
+✅ Turnstile 已通过 (token: 1.nGvi0btnNhRItiN-ysrUmDi5K40l...)
+📧 已填写邮箱: tmptavily0aze7jq1@chatai1.nightrain.ggff.net
+🖱️  已提交表单
+⏳ 等待密码页面...
+✅ 到达注册密码页面
+🔑 已填写密码
+🖱️  已提交密码
+⏳ 等待验证码页面...
+⚠️  未检测到验证码页面
+✅ 无需邮件验证
+🔑 获取 API Key...
+⚠️  未找到 API Key
+
+❌ [18/20] 失败 (98s)
+📊 统计: 6成功 / 12失败 / 18总 = 33%
+
+============================================================
+[19/20] 开始注册... 05:24:55
+============================================================
+  [cf_temp_email] 创建邮箱: tavily-y7y3sdax@chatai1.nightrain.ggff.net
+  [cf_temp_email] API: https://cloudflare_temp_email.ccrt.workers.dev/admin/new_address
+  [cf_temp_email] 响应状态: 200
+  [cf_temp_email] 创建成功: tmptavilyy7y3sdax@chatai1.nightrain.ggff.net
+✅ 邮箱(cloudflare_temp_email): tmptavilyy7y3sdax@chatai1.nightrain.ggff.net
+🌐 使用 DrissionPage 浏览器模式注册: tmptavilyy7y3sdax@chatai1.nightrain.ggff.net
+✅ 浏览器已启动
+🖱️  已切换到注册表单
+🔐 等待 Turnstile 验证...
+  [turnstile] Token 已获取，长度=730
+✅ Turnstile 已通过 (token: 1.1f1lS8kj0sxOz3BPy7cruFadQgHn...)
+📧 已填写邮箱: tmptavilyy7y3sdax@chatai1.nightrain.ggff.net
+🖱️  已提交表单
+⏳ 等待密码页面...
+✅ 到达注册密码页面
+🔑 已填写密码
+🖱️  已提交密码
+⏳ 等待验证码页面...
+⚠️  未检测到验证码页面
+✅ 无需邮件验证
+🔑 获取 API Key...
+⚠️  未找到 API Key
+
+❌ [19/20] 失败 (97s)
+📊 统计: 6成功 / 13失败 / 19总 = 32%
+
+============================================================
+[20/20] 开始注册... 05:26:35
+============================================================
+  [cf_temp_email] 创建邮箱: tavily-79wo1ynw@chatai1.nightrain.ggff.net
+  [cf_temp_email] API: https://cloudflare_temp_email.ccrt.workers.dev/admin/new_address
+  [cf_temp_email] 响应状态: 200
+  [cf_temp_email] 创建成功: tmptavily79wo1ynw@chatai1.nightrain.ggff.net
+✅ 邮箱(cloudflare_temp_email): tmptavily79wo1ynw@chatai1.nightrain.ggff.net
+🌐 使用 DrissionPage 浏览器模式注册: tmptavily79wo1ynw@chatai1.nightrain.ggff.net
+✅ 浏览器已启动
+🖱️  已切换到注册表单
+🔐 等待 Turnstile 验证...
+  [turnstile] Token 已获取，长度=730
+✅ Turnstile 已通过 (token: 1.I5p0PYwz_UOFf2Fc9D9VLBRmqbr5...)
+📧 已填写邮箱: tmptavily79wo1ynw@chatai1.nightrain.ggff.net
+🖱️  已提交表单
+⏳ 等待密码页面...
+✅ 到达注册密码页面
+🔑 已填写密码
+🖱️  已提交密码
+⏳ 等待验证码页面...
+⚠️  未检测到验证码页面
+✅ 无需邮件验证
+🔑 获取 API Key...
+⚠️  未找到 API Key
+
+❌ [20/20] 失败 (98s)
+📊 统计: 6成功 / 14失败 / 20总 = 30%
+
+============================================================
+📋 最终: 6/20 成功 (30%)
+   1. ✅ tvly-dev-46Lj5P-OEA6m29vzJYWZc
+   2. ✅ tvly-dev-1gNCZn-F2qDv8rYkew94J
+   3. ✅ tvly-dev-2zJVQf-StEPXHTdCo1Tbf
+   4. ✅ tvly-dev-3gM5qG-sdqfB2RAe4nQsH
+   5. ❌ ---
+   6. ❌ ---
+   7. ❌ ---
+   8. ❌ ---
+   9. ✅ tvly-dev-GAUR9-HJgKqFLhz1SCepZ
+  10. ❌ ---
+  11. ❌ ---
+  12. ❌ ---
+  13. ❌ ---
+  14. ❌ ---
+  15. ❌ ---
+  16. ✅ tvly-dev-1EAi6R-TccROV1bCRjnEf
+  17. ❌ ---
+  18. ❌ ---
+  19. ❌ ---
+  20. ❌ ---
+
+报告: batch_report_20260529_052813.json

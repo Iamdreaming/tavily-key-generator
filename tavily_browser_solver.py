@@ -493,7 +493,7 @@ def register_with_browser_solver(email, password):
             if submit_btn:
                 submit_btn.click()
                 print("🖱️  已提交密码")
-            time.sleep(3)
+            time.sleep(5)
         else:
             print("⚠️  未检测到密码页面")
 
@@ -521,73 +521,96 @@ def register_with_browser_solver(email, password):
         else:
             print("⚠️  未检测到验证码页面")
 
-        # 6. 检查是否需要邮件验证（页面可能提示验证邮箱）
+        # 6. 密码提交后的页面状态
         time.sleep(3)
         current_url = page.url
+        print(f"📍 密码提交后 URL: {current_url}")
         need_verify = False
-        
+
         # 检查 URL 或页面内容是否提示需要验证
         if "verify" in current_url.lower():
             need_verify = True
         else:
-            # 检查页面是否有验证邮箱的提示
             html = page.html
             if any(kw in html.lower() for kw in ["verify your email", "confirm your email", "验证邮箱", "确认邮箱", "email verification"]):
                 need_verify = True
-            # 检查是否有重新发送验证邮件的按钮
             resend = page.ele("text():Resend") or page.ele("text():resend") or page.ele("text():重新发送")
             if resend:
                 need_verify = True
-        
+
         if need_verify:
             print("📧 需要邮件验证")
-            # 点击重新发送验证邮件（如果有的话）
             resend = page.ele("text():Resend") or page.ele("text():resend") or page.ele("text():重新发送")
             if resend:
                 resend.click()
                 print("🖱️  已点击重新发送验证邮件")
                 time.sleep(3)
-            
-            # 等待验证链接
+
             verify_url = get_verification_link(email, timeout=120)
             if verify_url:
                 print(f"✅ 获取到验证链接: {verify_url[:50]}...")
-                page.get(verify_url)
-                page.wait.doc_loaded()
+                # 在浏览器中打开验证链接，但设置超时避免卡死在 Auth0 页面
+                try:
+                    page.get(verify_url, timeout=15)
+                except Exception:
+                    pass  # 超时是预期的，Auth0 验证页可能加载慢
                 time.sleep(5)
-                
-                # 验证后可能需要重新登录
-                if "login" in page.url.lower() or "sign-in" in page.url.lower():
-                    print("验证后需要重新登录")
-                    time.sleep(3)
-                    # 填写邮箱
-                    re_email = wait_for_element(page, "@name=username", timeout=10)
-                    if re_email:
-                        re_email.clear()
-                        re_email.input(email)
-                        time.sleep(1)
-                        btn = page.ele("@type=submit")
-                        if btn:
-                            btn.click()
-                        time.sleep(5)
-                    # 填写密码
-                    re_pw = wait_for_element(page, "@name=password", timeout=10)
-                    if re_pw:
-                        re_pw.clear()
-                        re_pw.input(password)
-                        time.sleep(1)
-                        btn = page.ele("@type=submit") or page.ele("text():Continue") or page.ele("text():Log in")
-                        if btn:
-                            btn.click()
-                        time.sleep(8)
-                    print(f"重新登录后 URL: {page.url}")
+                print(f"📍 验证后 URL: {page.url[:60]}")
+
+                # 导航回 dashboard（session 仍有效）
+                page.get("https://app.tavily.com/home")
+                page.wait.doc_loaded()
+                time.sleep(8)
+                print(f"📍 Dashboard URL: {page.url}")
             else:
                 print("⚠️  未获取到验证链接，尝试继续...")
         else:
             print("✅ 无需邮件验证")
+            # 密码提交后直接到了 dashboard/首页，不需要邮件验证
+            # 但 dashboard 首页可能不显示 API Key，需要主动导航到设置页
+            if "app.tavily.com" in current_url:
+                # 已登录状态，直接去 dashboard 获取 key
+                print("🔗 已在 app.tavily.com，尝试导航到 dashboard...")
+                page.get("https://app.tavily.com/home")
+                page.wait.doc_loaded()
+                time.sleep(5)
+                print(f"📍 Dashboard URL: {page.url}")
+            elif "sign-in" in current_url.lower() or "login" in current_url.lower():
+                # 密码提交后回到了登录页 — 说明注册成功但需要登录
+                print("🔄 密码提交后回到登录页，尝试重新登录...")
+                re_email = wait_for_element(page, "@name=username", timeout=10)
+                if re_email:
+                    re_email.clear()
+                    re_email.input(email)
+                    time.sleep(1)
+                    btn = page.ele("@type=submit")
+                    if btn:
+                        btn.click()
+                    time.sleep(5)
+                re_pw = wait_for_element(page, "@name=password", timeout=10)
+                if re_pw:
+                    re_pw.clear()
+                    re_pw.input(password)
+                    time.sleep(1)
+                    btn = page.ele("@type=submit") or page.ele("text():Continue") or page.ele("text():Log in")
+                    if btn:
+                        btn.click()
+                    time.sleep(8)
+                print(f"📍 重新登录后 URL: {page.url}")
+                # 登录后导航到 dashboard
+                page.get("https://app.tavily.com/home")
+                page.wait.doc_loaded()
+                time.sleep(5)
+            else:
+                # 未知页面，尝试导航到 dashboard
+                print(f"⚠️  未知页面状态，尝试导航到 dashboard...")
+                page.get("https://app.tavily.com/home")
+                page.wait.doc_loaded()
+                time.sleep(5)
 
         # 7. 获取 API Key
         print("🔑 获取 API Key...")
+        print(f"📍 当前 URL: {page.url}")
         api_key = wait_for_api_key(page, timeout=30)
         if not api_key:
             # 尝试从当前页面找
